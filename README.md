@@ -44,3 +44,5 @@ Each city's raw weather file contains the following columns:
 | `wind_speed_10m`       | Wind speed at 10 meters height (m/s)          |
 | `wind_speed_100m`      | Wind speed at 100 meters height (m/s)         |
 | `wind_direction_10m`   | Wind direction at 10 meters (degrees)         |
+| `wind_direction_100m`  | Wind direction at 100 meters (degrees)        |
+| `wind_gusts_10m`       | Wind gusts at 10m (m/s)                       |

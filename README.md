@@ -1,7 +1,7 @@
 # Big Data-Driven Weather Prediction and Visualization Framework for Indian Cities
 
 🔍 Project Overview: Weather Data Prediction & Analysis for Indian Cities
-This project is focused on analyzing and processing large-scale historical weather data for over 5000 Indian cities to enable weather pattern insights, predictions, and visualizations.
+This project is focused on analyzing and processing large-scale historical weather data for over 4000+ Indian cities to enable weather pattern insights, predictions, and visualizations.
 
 ## 📦 Dataset Source
 
@@ -13,61 +13,34 @@ This project is focused on analyzing and processing large-scale historical weath
 
 The primary goal of this project is to:
 
-- 📥 Ingest hourly weather data (2010–2014) from Kaggle.
-- 🧹 Clean and normalize data (e.g., handle missing values, correct `snow_depth` issues).
-- ⏱️ Aggregate data from hourly to **12-hour intervals (AM/PM)**.
-- 🏙️ Merge multiple files per city (e.g., `mumbai.csv`, `mumbai_1.csv`).
-- 📍 Map each city to its respective **Indian state**.
-- 🚀 Export a **single clean CSV per city** back to an AWS S3 bucket.
-
----
-
-## ⚙️ Tech Stack
-
-- **Apache Spark** on **AWS EMR**
-- **Python (PySpark)**
-- **AWS S3** – Data storage
-- **AWS CLI** – File operations
-- **Jupyter Notebook** (on EMR) – For interactive development
-
----
+- To collect and process large volumes of historical weather data from over 4,000+ Indian cities using big data tools and frameworks.
+- To perform comprehensive data cleaning, transformation, and time-series analysis to ensure high-quality input for modelling.
+- To identify and analyse seasonal patterns, extreme weather events, and temperature trends to understand climate behaviour.
+- To develop accurate predictive models for forecasting weather parameters such as temperature, humidity, rainfall, and wind speed.
+- To build interactive and user-friendly visual dashboards for real-time monitoring of weather metrics including temperature, humidity, wind speed, and precipitation.
+- To demonstrate the practical application of big data technologies in environmental monitoring and meteorological forecasting.
 
 ## 📁 Dataset Description
 
-Each city’s raw weather file contains the following columns:
+Each city's raw weather file contains the following columns:
 
-| Column Name            | Description                               |
-| ---------------------- | ----------------------------------------- |
-| `datetime`             | Date and time (hourly)                    |
-| `temperature_2m`       | Temperature at 2 meters height (°C)       |
-| `relative_humidity_2m` | Relative humidity (%)                     |
-| `dew_point_2m`         | Dew point temperature (°C)                |
-| `apparent_temperature` | "Feels like" temperature (°C)             |
-| `precipitation`        | Total precipitation (mm)                  |
-| `rain`                 | Rainfall amount (mm)                      |
-| `snowfall`             | Snowfall amount (mm)                      |
-| `snow_depth`           | Snow depth on ground (cm)                 |
-| `wind_speed_10m`       | Wind speed at 10 meters (km/h)            |
-| `...`                  | 10+ additional weather-related attributes |
-
-> 🗂️ **File Naming Format**:  
-> Files are named like `cityname.csv`, `cityname_1.csv`, etc. to represent duplicate/overlapping datasets for a single city.
-
----
-
-## 📤 Output
-
-- Cleaned and transformed **12-hour interval CSV files** per city.
-- All outputs are stored in **AWS S3**, organized by city and state.
-
----
-
-## 📬 Contact
-
-For feedback or questions, feel free to reach out:
-
-**Gourav Sharma**  
-📧 gourav@example.com  
-🌐 [LinkedIn](https://linkedin.com/in/yourprofile) | [GitHub](https://github.com/yourgithub)
-
----
+| Column Name            | Description                                   |
+| ---------------------- | --------------------------------------------- |
+| `date`                 | The specific date of weather observation      |
+| `temperature_2m`       | Air temperature at 2 meters above ground (°C) |
+| `relative_humidity_2m` | Relative humidity at 2 meters (%)             |
+| `dew_point_2m`         | Dew point temperature (°C)                    |
+| `apparent_temperature` | Feels-like temperature (°C)                   |
+| `precipitation`        | Total precipitation (mm)                      |
+| `rain`                 | Rainfall amount (mm)                          |
+| `snowfall`             | Snowfall amount (mm)                          |
+| `snow_depth`           | Snow depth on ground (cm)                     |
+| `pressure_msl`         | Mean sea-level pressure (hPa)                 |
+| `surface_pressure`     | Atmospheric pressure at the surface (hPa)     |
+| `cloud_cover`          | Overall cloud cover (%)                       |
+| `cloud_cover_low`      | Low-level cloud cover (%)                     |
+| `cloud_cover_mid`      | Mid-level cloud cover (%)                     |
+| `cloud_cover_high`     | High-level cloud cover (%)                    |
+| `wind_speed_10m`       | Wind speed at 10 meters height (m/s)          |
+| `wind_speed_100m`      | Wind speed at 100 meters height (m/s)         |
+| `wind_direction_10m`   | Wind direction at 10 meters (degrees)         |

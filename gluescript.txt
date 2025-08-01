@@ -92,3 +92,4 @@ df_12hr_final.coalesce(1).write.mode("overwrite").parquet(output_path)
 
 # ======================== END GLUE JOB ========================
 job.commit()
+

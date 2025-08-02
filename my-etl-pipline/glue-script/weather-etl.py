@@ -30,8 +30,8 @@ job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
 # ======================== CONFIGURATION ========================
-input_path = "s3://myawsgluecrawler/mysampleglue/"
-output_path = "s3://myawsgluererter/par/"
+input_path = "s3://fullautomatedbucket/files/"
+output_path = "s3://fullautomatedbucket/cleaned_data/"
 
 # ======================== READ DATA ========================
 df_raw = (
@@ -150,7 +150,10 @@ df_12hr_final = df_12hr_multi.unionByName(df_12hr_single).orderBy(
 )
 
 # ======================== WRITE TO S3 ========================
-df_12hr_final.coalesce(1).write.mode("overwrite").parquet(output_path)
+df_12hr_final.coalesce(1).write.mode("overwrite").option("header", "true").csv(
+    output_path
+)
+
 
 # ======================== END GLUE JOB ========================
 job.commit()

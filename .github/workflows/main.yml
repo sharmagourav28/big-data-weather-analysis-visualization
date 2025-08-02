@@ -34,7 +34,7 @@ jobs:
 
       - name: Upload latest ETL script to S3
         run: |
-          aws s3 cp my-etl-pipeline/glue-script/weather_etl.py s3://fullautomatedbucket/scripts/weather_etl.py
+          aws s3 cp my-etl-pipline/glue-script/weather-etl.py s3://fullautomatedbucket/scripts/weather-etl.py
 
     #   - name: Trigger Glue ETL Job
     #     run: |

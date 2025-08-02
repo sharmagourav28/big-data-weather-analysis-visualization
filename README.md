@@ -22,7 +22,7 @@ The primary goal of this project is to:
 
 ## 📁 Dataset Description
 
-Each city's raw weather file contains the following columns: done:
+Each city's raw weather file contains the following columns: done
 
 | Column Name            | Description                                   |
 | ---------------------- | --------------------------------------------- |

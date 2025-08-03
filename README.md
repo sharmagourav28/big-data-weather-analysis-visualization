@@ -18,7 +18,7 @@ The primary goal of this project is to:
 - To identify and analyse seasonal patterns, extreme weather events, and temperature trends to understand climate behaviour.
 - To develop accurate predictive models for forecasting weather parameters such as temperature, humidity, rainfall, and wind speed.
 - To build interactive and user-friendly visual dashboards for real-time monitoring of weather metrics including temperature, humidity, wind speed, and precipitation.
-- To demonstrate the practical application of big data technologies in environmental monitoring and meteorological forecasting.
+- To demonstrate the practical application of big data technologies in environmental monitoring and meteorological forecasting..
 
 ## 📁 Dataset Description
 

@@ -6,7 +6,7 @@ This project focuses on the **analysis and visualization** of historical weather
 
 ---
 
-## 🎯 Key Objectives
+## 🎯 Key Objectivess
 
 - Collect and process large-scale weather data using Big Data tools.
 - Clean, transform, and analyze time-series weather records.

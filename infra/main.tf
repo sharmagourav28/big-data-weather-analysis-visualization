@@ -6,13 +6,6 @@ resource "aws_glue_catalog_database" "etl_db" {
   name = "weather_db"
 }
 
-# REMOVE or COMMENT THIS BLOCK:
-# resource "aws_iam_role" "glue_role" { ... }
-
-# REMOVE or COMMENT THIS BLOCK:
-# resource "aws_iam_role_policy_attachment" "glue_role_policy" { ... }
-
-# Replace with your existing role ARN
 locals {
   glue_role_arn = "arn:aws:iam::236884234329:role/labrole"
 }

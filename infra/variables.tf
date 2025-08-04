@@ -5,7 +5,7 @@ variable "region" {
 
 #declare a bucket name
 variable "bucket_name_prefix" {
-  default = "fullautomatedbucket"
+  default = "fullautomatedbucketterraform"
 }
 
 

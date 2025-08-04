@@ -4,9 +4,10 @@ variable "region" {
 }
 
 #declare a bucket name
-variable "bucket_name" {
-  default = "fullautomatedbucket-${random_id.suffix.hex}"
+variable "bucket_name_prefix" {
+  default = "fullautomatedbucket"
 }
+
 
 #declare a glue job name
 variable "glue_job_name" {

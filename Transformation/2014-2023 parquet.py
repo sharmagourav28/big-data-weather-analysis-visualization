@@ -14,6 +14,8 @@ df_filtered.repartition(50) \
     .parquet("s3://wd2-20142023/wd2_2014_2023/")
 
 
+
+
 from pyspark.sql.functions import col, to_date, year
 
 # Load the CSVs (assuming your data is in CSV format and already on disk or cloud)

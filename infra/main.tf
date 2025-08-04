@@ -35,7 +35,6 @@ resource "aws_glue_job" "etl_job" {
     python_version  = "3"
   }
   glue_version      = "4.0"
-  max_capacity      = 2
   number_of_workers = 2
   worker_type       = "G.1X"
 }

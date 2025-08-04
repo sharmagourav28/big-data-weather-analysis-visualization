@@ -2,7 +2,7 @@
 
 ## 📌 Overview
 
-This project focuses on the **analysis and visualization** of historical weather data across **4,000+ Indian cities** using Big Data technologies. It leverages distributed data processing frameworks and modern data visualization tools to deliver meaningful climate insights, seasonal pattern detection, and extreme weather tracking.
+This project focuses on the **analysis and visualization** of historical weather data across **4,000+ Indian cities** using Big Data technologies. It leverages distributed data processing frameworks and modern data visualization tools to deliver meaningful climate insights, seasonal pattern detection, and extreme weather tracking..
 
 ---
 

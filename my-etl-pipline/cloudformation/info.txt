@@ -1,0 +1,1 @@
+remove bucket - glue etl job crawler database catalog

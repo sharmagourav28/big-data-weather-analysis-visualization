@@ -30,7 +30,7 @@ job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
 # ======================== CONFIGURATION ========================
-input_path = "s3://fullautomatedbucket/files/"
+input_path = "s3://sampledataautommated/files/"
 output_path = "s3://fullautomatedbucket/cleaned_data/"
 
 # ======================== READ DATA ========================

@@ -30,8 +30,8 @@ job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
 # ======================== CONFIGURATION ========================
-input_path = "s3://myawsgluecrawler/mysampleglue/"
-output_path = "s3://myawsgluererter/par/"
+input_path = "s3://sampledataautommated/files/"
+output_path = "s3://fullautomatedbucket/cleaned_data/"
 
 # ======================== READ DATA ========================
 df_raw = (
@@ -50,6 +50,8 @@ df_with_city = (
     .withColumn("city", regexp_replace("city", " ", ""))
 )
 
+
+#
 # ======================== HANDLE NULLS ========================
 df_filled = df_with_city.fillna({"snow_depth": 0})
 
@@ -149,8 +151,36 @@ df_12hr_final = df_12hr_multi.unionByName(df_12hr_single).orderBy(
     "new_datetime", "city"
 )
 
+
 # ======================== WRITE TO S3 ========================
-df_12hr_final.coalesce(1).write.mode("overwrite").parquet(output_path)
+final_cols = [
+    "new_datetime",
+    "city",
+    "temperature_2m",
+    "relative_humidity_2m",
+    "dew_point_2m",
+    "apparent_temperature",
+    "precipitation",
+    "rain",
+    "snowfall",
+    "snow_depth",
+    "pressure_msl",
+    "surface_pressure",
+    "cloud_cover",
+    "cloud_cover_low",
+    "cloud_cover_mid",
+    "cloud_cover_high",
+    "wind_speed_10m",
+    "wind_speed_100m",
+    "wind_direction_10m",
+    "wind_direction_100m",
+    "wind_gusts_10m",
+]
+
+df_12hr_final.select(final_cols).coalesce(1).write.mode("overwrite").option(
+    "header", "true"
+).csv(output_path)
+
 
 # ======================== END GLUE JOB ========================
 job.commit()

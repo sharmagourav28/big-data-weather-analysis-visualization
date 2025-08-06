@@ -17,8 +17,4 @@ variable "glue_crawler_name" {
 variable "script_s3_path" {
   default = "s3://fullautomatedbucketterraformone/scripts/weather-etl.py"
 }
-variable "glue_role_arn" {
-  description = "IAM Role ARN for AWS Glue"
-  type        = string
-  sensitive   = true
-}
+

@@ -11,7 +11,6 @@ env:
   S3_BUCKET: fullautomatedbucketterraformone
   ETL_JOB_NAME: glue-etl-job
   CRAWLER_NAME: my-etl-crawler
-  TF_VAR_aws_id: ${{ secrets.AWS_ID }}
 
 jobs:
   infra-deploy:
@@ -41,7 +40,7 @@ jobs:
 
       - name: Terraform Apply
         working-directory: infra
-        run: terraform apply -var-file="secret.tfvars"
+        run: terraform apply
 
   run-etl:
     needs: infra-deploy

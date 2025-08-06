@@ -41,7 +41,7 @@ jobs:
 
       - name: Terraform Apply
         working-directory: infra
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var="aws_id=${{ env.AWS_ID }}"
 
   run-etl:
     needs: infra-deploy

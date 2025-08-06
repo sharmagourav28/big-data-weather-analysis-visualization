@@ -41,7 +41,7 @@ job.init(args["JOB_NAME"], args)
 
 base_paths = "s3://allweatherdatastatelaglongwd3/files/"
 mapping_path = "s3://citystatelatlong/city_state_latlong/merged_city_state_lat_long.csv"
-output_path = "s3://fullautomatedbucketterraformone/transformeddata/"
+output_path = "s3://fullautomatedbucketterraformone11/transformeddata/"
 
 # ------------------- Load Weather Data -------------------
 df_all = spark.read.option("header", True).parquet(base_paths)

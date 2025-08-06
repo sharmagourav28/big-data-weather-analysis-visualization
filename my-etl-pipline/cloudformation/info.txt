@@ -8,3 +8,5 @@ evrything is ok
 chal
 ok
 okok
+
+tarraform is run properly

@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "bucket_name_prefix" {
-  default = "fullautomatedbucketterraform"
+  default = "fullautomatedbucketterraformone"
 }
 
 variable "glue_job_name" {
@@ -15,5 +15,5 @@ variable "glue_crawler_name" {
 }
 
 variable "script_s3_path" {
-  default = "s3://fullautomatedbucket/scripts/weather-etl.py"
+  default = "s3://fullautomatedbucketone/scripts/weather-etl.py"
 }

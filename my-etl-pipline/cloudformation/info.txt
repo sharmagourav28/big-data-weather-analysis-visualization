@@ -5,3 +5,4 @@ remove bucket - glue etl job crawler database catalog
 aws session token corrected
 
 evrything is ok
+chal

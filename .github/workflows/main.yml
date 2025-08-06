@@ -11,6 +11,7 @@ env:
   S3_BUCKET: fullautomatedbucketterraformone
   ETL_JOB_NAME: glue-etl-job
   CRAWLER_NAME: my-etl-crawler
+  TF_VAR_aws_id: ${{ secrets.AWS_ID }}
 
 jobs:
   infra-deploy:
@@ -62,28 +63,28 @@ jobs:
           aws s3 cp ${{ env.SCRIPT_PATH }} s3://${{ env.S3_BUCKET }}/scripts/weather-etl.py
           echo "ETL script uploaded to S3."
 
-      - name: Start Glue ETL Job
-        id: start_etl
-        run: |
-          JOB_RUN_ID=$(aws glue start-job-run --job-name ${{ env.ETL_JOB_NAME }} --query 'JobRunId' --output text)
-          echo "ETL JobRunId: $JOB_RUN_ID"
-          echo "job_run_id=$JOB_RUN_ID" >> $GITHUB_OUTPUT
+      # - name: Start Glue ETL Job
+      #   id: start_etl
+      #   run: |
+      #     JOB_RUN_ID=$(aws glue start-job-run --job-name ${{ env.ETL_JOB_NAME }} --query 'JobRunId' --output text)
+      #     echo "ETL JobRunId: $JOB_RUN_ID"
+      #     echo "job_run_id=$JOB_RUN_ID" >> $GITHUB_OUTPUT
 
-      - name: Wait for ETL Job Completion
-        run: |
-          JOB_RUN_ID=${{ steps.start_etl.outputs.job_run_id }}
-          while true; do
-            STATUS=$(aws glue get-job-run --job-name ${{ env.ETL_JOB_NAME }} --run-id "$JOB_RUN_ID" --query 'JobRun.JobRunState' --output text)
-            echo "Current ETL job status: $STATUS"
-            if [ "$STATUS" == "SUCCEEDED" ]; then
-              echo "ETL Job completed successfully."
-              break
-            elif [ "$STATUS" == "FAILED" ] || [ "$STATUS" == "STOPPED" ]; then
-              echo "ETL Job failed or stopped."
-              exit 1
-            fi
-            sleep 30
-          done
+      # - name: Wait for ETL Job Completion
+      #   run: |
+      #     JOB_RUN_ID=${{ steps.start_etl.outputs.job_run_id }}
+      #     while true; do
+      #       STATUS=$(aws glue get-job-run --job-name ${{ env.ETL_JOB_NAME }} --run-id "$JOB_RUN_ID" --query 'JobRun.JobRunState' --output text)
+      #       echo "Current ETL job status: $STATUS"
+      #       if [ "$STATUS" == "SUCCEEDED" ]; then
+      #         echo "ETL Job completed successfully."
+      #         break
+      #       elif [ "$STATUS" == "FAILED" ] || [ "$STATUS" == "STOPPED" ]; then
+      #         echo "ETL Job failed or stopped."
+      #         exit 1
+      #       fi
+      #       sleep 30
+      #     done
 
-      - name: Start Glue Crawler
-        run: aws glue start-crawler --name ${{ env.CRAWLER_NAME }}
+      # - name: Start Glue Crawler
+      #   run: aws glue start-crawler --name ${{ env.CRAWLER_NAME }}

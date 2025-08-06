@@ -17,3 +17,6 @@ variable "glue_crawler_name" {
 variable "script_s3_path" {
   default = "s3://fullautomatedbucketterraformone/scripts/weather-etl.py"
 }
+variable "aws_id" {
+  description = "AWS Account ID"
+}

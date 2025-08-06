@@ -15,5 +15,5 @@ variable "glue_crawler_name" {
 }
 
 variable "script_s3_path" {
-  default = "s3://fullautomatedbucketone/scripts/weather-etl.py"
+  default = "s3://fullautomatedbucketterraformone/scripts/weather-etl.py"
 }

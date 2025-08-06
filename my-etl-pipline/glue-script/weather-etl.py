@@ -44,7 +44,7 @@ mapping_path = "s3://citystatelatlong/city_state_latlong/merged_city_state_lat_l
 output_path = "s3://fullautomatedbucketterraformone/transformeddata/"
 
 # ------------------- Load Weather Data -------------------
-df_all = spark.read.option("header", True).parquet(*base_paths)
+df_all = spark.read.option("header", True).parquet(base_paths)
 
 
 # Extract city from file path

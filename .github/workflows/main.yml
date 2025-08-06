@@ -40,7 +40,7 @@ jobs:
 
       - name: Terraform Apply
         working-directory: infra
-        run: terraform apply
+        run: terraform apply -auto-approve
 
   run-etl:
     needs: infra-deploy
@@ -69,21 +69,21 @@ jobs:
           echo "ETL JobRunId: $JOB_RUN_ID"
           echo "job_run_id=$JOB_RUN_ID" >> $GITHUB_OUTPUT
 
-      - name: Wait for ETL Job Completion
-        run: |
-          JOB_RUN_ID=${{ steps.start_etl.outputs.job_run_id }}
-          while true; do
-            STATUS=$(aws glue get-job-run --job-name ${{ env.ETL_JOB_NAME }} --run-id "$JOB_RUN_ID" --query 'JobRun.JobRunState' --output text)
-            echo "Current ETL job status: $STATUS"
-            if [ "$STATUS" == "SUCCEEDED" ]; then
-              echo "ETL Job completed successfully."
-              break
-            elif [ "$STATUS" == "FAILED" ] || [ "$STATUS" == "STOPPED" ]; then
-              echo "ETL Job failed or stopped."
-              exit 1
-            fi
-            sleep 30
-          done
+      # - name: Wait for ETL Job Completion
+      #   run: |
+      #     JOB_RUN_ID=${{ steps.start_etl.outputs.job_run_id }}
+      #     while true; do
+      #       STATUS=$(aws glue get-job-run --job-name ${{ env.ETL_JOB_NAME }} --run-id "$JOB_RUN_ID" --query 'JobRun.JobRunState' --output text)
+      #       echo "Current ETL job status: $STATUS"
+      #       if [ "$STATUS" == "SUCCEEDED" ]; then
+      #         echo "ETL Job completed successfully."
+      #         break
+      #       elif [ "$STATUS" == "FAILED" ] || [ "$STATUS" == "STOPPED" ]; then
+      #         echo "ETL Job failed or stopped."
+      #         exit 1
+      #       fi
+      #       sleep 30
+      #     done
 
-      - name: Start Glue Crawler
-        run: aws glue start-crawler --name ${{ env.CRAWLER_NAME }}
+      # - name: Start Glue Crawler
+      #   run: aws glue start-crawler --name ${{ env.CRAWLER_NAME }}

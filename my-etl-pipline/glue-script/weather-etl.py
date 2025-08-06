@@ -1,27 +1,30 @@
 import sys
-from awsglue.transforms import *
 from awsglue.utils import getResolvedOptions
 from pyspark.context import SparkContext
 from awsglue.context import GlueContext
 from awsglue.job import Job
+
+import pyspark
+from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.functions import (
     col,
     input_file_name,
     regexp_extract,
-    regexp_replace,
-    initcap,
+    isnull,
+    isnan,
+    lit,
+    hour,
     to_timestamp,
     to_date,
-    hour,
     when,
-    lit,
     concat_ws,
     avg,
-    first,
+    regexp_replace,
+    initcap,
 )
 
-# ======================== GLUE CONTEXT SETUP ========================
+# ------------------- Glue & Spark Setup -------------------
 args = getResolvedOptions(sys.argv, ["JOB_NAME"])
 sc = SparkContext()
 glueContext = GlueContext(sc)
@@ -29,62 +32,66 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
-# ======================== CONFIGURATION ========================
-input_path = "s3://sampledataautommated/files/"
-output_path = "s3://fullautomatedbucket/cleaned_data/"
+# ------------------- Paths -------------------
+# base_paths = [
+#     "s3://allweatherrdatasetstatelatlongwd1/wd1data/",
+#     "s3://allweatherstatelatlongwd2/wd2statedata/",
+#     "s3://allweatherdatastatelaglongwd3/files/",
+# ]
 
-# ======================== READ DATA ========================
-df_raw = (
-    spark.read.option("header", True)
-    .csv(input_path + "*.csv")
-    .withColumn("file_only", input_file_name())
+base_paths = "s3://allweatherdatastatelaglongwd3/files/"
+mapping_path = "s3://citystatelatlong/city_state_latlong/merged_city_state_lat_long.csv"
+output_path = "s3://fullautomatedbucketterraform/transformeddata/"
+
+# ------------------- Load Weather Data -------------------
+df_all = spark.read.option("header", True).parquet(*base_paths)
+
+
+# Extract city from file path
+df_cleaned = df_all.withColumn(
+    "city", regexp_extract(col("file_only"), r"/([^/]+?)(?:_\d+)?\.csv$", 1)
 )
 
-# ======================== CITY NAME EXTRACTION ========================
 df_with_city = (
-    df_raw.withColumn(
-        "city", regexp_extract(col("file_only"), r"/([^/]+?)(?:_\d+)?\.csv$", 1)
-    )
-    .withColumn("city", regexp_replace("city", "%20", " "))
+    df_cleaned.withColumn("city", regexp_replace("city", "%20", " "))
     .withColumn("city", initcap("city"))
     .withColumn("city", regexp_replace("city", " ", ""))
-)
+)  # Remove spaces
 
-
-#
-# ======================== HANDLE NULLS ========================
+# Fill specific null values
 df_filled = df_with_city.fillna({"snow_depth": 0})
 
-# ======================== CITY CLASSIFICATION ========================
-city_counts = df_filled.groupBy("city").agg(
+# ------------------- City Classification -------------------
+city_file_counts = df_with_city.groupBy("city").agg(
     F.countDistinct("file_only").alias("file_count")
 )
+
 multi_city_list = (
-    city_counts.filter("file_count > 1")
+    city_file_counts.filter("file_count > 1")
     .select("city")
     .rdd.flatMap(lambda x: x)
     .collect()
 )
 single_city_list = (
-    city_counts.filter("file_count = 1")
+    city_file_counts.filter("file_count = 1")
     .select("city")
     .rdd.flatMap(lambda x: x)
     .collect()
 )
 
 
-# ======================== 12-HOUR AGGREGATION FUNCTION ========================
+# ------------------- Utility Function -------------------
 def create_12hr_agg(df_input):
     df = (
         df_input.withColumn("datetime_ts", to_timestamp("date"))
         .withColumn("hour", hour("datetime_ts"))
         .withColumn("day_part", when(col("hour") < 12, "AM").otherwise("PM"))
-        .withColumn("date_only", to_date("datetime_ts"))
+        .withColumn("date", to_date(col("datetime_ts")))
         .withColumn(
             "new_datetime",
             concat_ws(
                 " ",
-                col("date_only"),
+                col("date"),
                 when(col("day_part") == "AM", lit("00:00:00")).otherwise(
                     lit("12:00:00")
                 ),
@@ -92,7 +99,7 @@ def create_12hr_agg(df_input):
         )
     )
 
-    metrics = [
+    key_metrics = [
         "temperature_2m",
         "relative_humidity_2m",
         "dew_point_2m",
@@ -114,73 +121,63 @@ def create_12hr_agg(df_input):
         "wind_gusts_10m",
     ]
 
-    agg_exprs = [avg(col(m)).alias(m) for m in metrics]
-    df_agg = df.groupBy("new_datetime", "city").agg(*agg_exprs)
-
-    return df_agg.select("new_datetime", "city", *metrics).orderBy(
+    agg_exprs = [avg(col(m)).alias(m) for m in key_metrics]
+    df_12hr = df.groupBy("new_datetime", "city").agg(*agg_exprs)
+    return df_12hr.select("new_datetime", "city", *key_metrics).orderBy(
         "new_datetime", "city"
     )
 
 
-# ======================== MULTI-FILE CITIES ========================
+# ------------------- Multi-file Merging -------------------
 df_multi = df_filled.filter(col("city").isin(multi_city_list))
 
-# Determine columns by data type
 numeric_cols = [
     c
     for c, t in df_multi.dtypes
     if t in ["double", "int", "float", "long"] and c not in ["date", "city"]
 ]
 string_cols = [
-    c for c, t in df_multi.dtypes if t == "string" and c not in ["date", "city"]
+    c for c, t in df_multi.dtypes if t in ["string"] and c not in ["date", "city"]
 ]
 
-merge_exprs = [avg(col(c)).alias(c) for c in numeric_cols] + [
-    first(col(c), ignorenulls=True).alias(c) for c in string_cols
+merge_exprs = [F.avg(col(c)).alias(c) for c in numeric_cols] + [
+    F.first(col(c), ignorenulls=True).alias(c) for c in string_cols
 ]
 
 df_merged = df_multi.groupBy("date", "city").agg(*merge_exprs)
 df_12hr_multi = create_12hr_agg(df_merged)
 
-# ======================== SINGLE-FILE CITIES ========================
+# ------------------- Single-file Cities -------------------
 df_single = df_filled.filter(col("city").isin(single_city_list))
 df_12hr_single = create_12hr_agg(df_single)
 
-# ======================== FINAL UNION ========================
+# ------------------- Final Union -------------------
 df_12hr_final = df_12hr_multi.unionByName(df_12hr_single).orderBy(
     "new_datetime", "city"
 )
 
+# ------------------- Mapping Data -------------------
+df_mapping = (
+    spark.read.option("header", True)
+    .csv(mapping_path)
+    .withColumn("latitude", col("latitude").cast("double"))
+    .withColumn("longitude", col("longitude").cast("double"))
+    .withColumn("city", regexp_replace("city", "%20", " "))
+    .withColumn("city", initcap("city"))
+    .withColumn("city", regexp_replace("city", " ", ""))
+    .withColumn("state", initcap("state"))
+)
 
-# ======================== WRITE TO S3 ========================
-final_cols = [
-    "new_datetime",
-    "city",
-    "temperature_2m",
-    "relative_humidity_2m",
-    "dew_point_2m",
-    "apparent_temperature",
-    "precipitation",
-    "rain",
-    "snowfall",
-    "snow_depth",
-    "pressure_msl",
-    "surface_pressure",
-    "cloud_cover",
-    "cloud_cover_low",
-    "cloud_cover_mid",
-    "cloud_cover_high",
-    "wind_speed_10m",
-    "wind_speed_100m",
-    "wind_direction_10m",
-    "wind_direction_100m",
-    "wind_gusts_10m",
-]
+df_mapped = df_12hr_final.join(
+    df_mapping.select("city", "state", "latitude", "longitude"), on="city", how="left"
+)
 
-df_12hr_final.select(final_cols).coalesce(1).write.mode("overwrite").option(
-    "header", "true"
-).csv(output_path)
+df_null_mapped = df_mapped.filter(
+    col("state").isNull() | col("latitude").isNull() | col("longitude").isNull()
+)
 
+# ------------------- Write Output -------------------
+df_mapped.write.mode("overwrite").partitionBy("state").parquet(output_path)
 
-# ======================== END GLUE JOB ========================
+# ------------------- Commit Job -------------------
 job.commit()

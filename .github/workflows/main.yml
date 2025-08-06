@@ -41,7 +41,7 @@ jobs:
 
       - name: Terraform Apply
         working-directory: infra
-        run: terraform apply
+        run: terraform apply -var-file="secrets.tfvars"
 
   run-etl:
     needs: infra-deploy

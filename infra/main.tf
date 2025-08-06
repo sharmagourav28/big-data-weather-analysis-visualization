@@ -7,7 +7,7 @@ resource "aws_glue_catalog_database" "etl_db" {
 }
 
 locals {
-  glue_role_arn = "arn:aws:iam::236884234329:role/LabRole"
+  glue_role_arn = "arn:aws:iam::736443288673:role/LabRole"
 }
 
 resource "aws_glue_job" "etl_job" {

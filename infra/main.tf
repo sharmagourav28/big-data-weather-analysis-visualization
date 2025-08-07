@@ -3,11 +3,11 @@ resource "aws_s3_bucket" "etl_bucket" {
 }
 
 resource "aws_glue_catalog_database" "etl_db" {
-  name = "weather_db"
+  name = "weather_db28"
 }
 
 locals {
-  glue_role_arn = "arn:aws:iam::236884234329:role/LabRole"
+  glue_role_arn = var.glue_role_arn
 }
 
 resource "aws_glue_job" "etl_job" {
@@ -15,7 +15,7 @@ resource "aws_glue_job" "etl_job" {
   role_arn = local.glue_role_arn
 
   command {
-    name            = "glueetl"
+    name            = "glueetl" # change not
     script_location = var.script_s3_path
     python_version  = "3"
   }
@@ -31,9 +31,8 @@ resource "aws_glue_crawler" "etl_crawler" {
   database_name = aws_glue_catalog_database.etl_db.name
 
   s3_target {
-    path = "s3://${var.bucket_name_prefix}/cleaned_data/"
+    path = "s3://${var.bucket_name_prefix}/transformeddata/"
   }
 
   depends_on = [aws_glue_job.etl_job]
 }
-

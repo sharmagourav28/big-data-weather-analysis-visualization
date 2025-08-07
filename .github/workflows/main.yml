@@ -5,12 +5,18 @@ on:
     branches:
       - blade
 
-jobs:
-  infra-etl:
-    runs-on: ubuntu-latest
+env:
+  AWS_REGION: ${{ secrets.REGION }}
+  SCRIPT_PATH: my-etl-pipline/glue-script/weather-etl.py
+  S3_BUCKET: fullautomatedbucketterraformone28
+  ETL_JOB_NAME: glue-etl-job28
+  CRAWLER_NAME: my-etl-crawler28
 
+jobs:
+  infra-deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Configure AWS Credentials
@@ -19,7 +25,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -35,24 +41,39 @@ jobs:
       - name: Terraform Apply
         working-directory: infra
         run: terraform apply -auto-approve
+        env:
+          TF_VAR_glue_role_arn: ${{ secrets.GLUE_ROLE_ARN }}
+
+  run-etl:
+    needs: infra-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload ETL Script to S3
         run: |
-          aws s3 cp my-etl-pipline/glue-script/weather-etl.py s3://fullautomatedbucket/scripts/weather-etl.py
+          aws s3 cp ${{ env.SCRIPT_PATH }} s3://${{ env.S3_BUCKET }}/scripts/weather-etl.py
           echo "ETL script uploaded to S3."
-
       - name: Start Glue ETL Job
         id: start_etl
         run: |
-          JOB_RUN_ID=$(aws glue start-job-run --job-name glue-etl-job --query 'JobRunId' --output text)
+          JOB_RUN_ID=$(aws glue start-job-run --job-name ${{ env.ETL_JOB_NAME }} --query 'JobRunId' --output text)
           echo "ETL JobRunId: $JOB_RUN_ID"
           echo "job_run_id=$JOB_RUN_ID" >> $GITHUB_OUTPUT
-
       - name: Wait for ETL Job Completion
         run: |
           JOB_RUN_ID=${{ steps.start_etl.outputs.job_run_id }}
           while true; do
-            STATUS=$(aws glue get-job-run --job-name glue-etl-job --run-id "$JOB_RUN_ID" --query 'JobRun.JobRunState' --output text)
+            STATUS=$(aws glue get-job-run --job-name ${{ env.ETL_JOB_NAME }} --run-id "$JOB_RUN_ID" --query 'JobRun.JobRunState' --output text)
             echo "Current ETL job status: $STATUS"
             if [ "$STATUS" == "SUCCEEDED" ]; then
               echo "ETL Job completed successfully."
@@ -63,6 +84,5 @@ jobs:
             fi
             sleep 30
           done
-
       - name: Start Glue Crawler
-        run: aws glue start-crawler --name my-etl-crawler
+        run: aws glue start-crawler --name ${{ env.CRAWLER_NAME }}

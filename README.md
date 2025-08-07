@@ -47,9 +47,9 @@ Each file represents weather metrics for an Indian city. Key columns include:
 | Category           | Tools / Frameworks                |
 | ------------------ | --------------------------------- |
 | **Big Data Tools** | Apache Spark, AWS Glue, Amazon S3 |
-| **Storage**        | AWS S3, HDFS                      |
+| **Storage**        | AWS S3,                           |
 | **Orchestration**  | AWS Glue Crawlers                 |
-| **Data Querying**  | AWS Athena, Apache Hive           |
-| **Visualization**  | Power BI / Tableau                |
+| **Data Querying**  | AWS Athena,                       |
+| **Visualization**  | Power BI                          |
 | **Language**       | PySpark, SQL, Python              |
 | **Cloud**          | AWS (Glue, S3, Athena)            |

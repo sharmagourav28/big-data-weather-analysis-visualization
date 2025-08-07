@@ -5,21 +5,21 @@ variable "region" {
 
 #declare a bucket name
 variable "bucket_name_prefix" {
-  default = "fullautomatedbucketterraformone11"
+  default = "fullautomatedbucketterraformone28"
 }
 
 
 #declare a glue job name
 variable "glue_job_name" {
-  default = "glue-etl-job"
+  default = "glue-etl-job28"
 }
 
 #declare a crawler name
 variable "glue_crawler_name" {
-  default = "my-etl-crawler"
+  default = "my-etl-crawler28"
 }
 
 #declare a script path
 variable "script_s3_path" {
-  default = "s3://fullautomatedbucketterraformone11/scripts/weather-etl.py"
+  default = "s3://fullautomatedbucketterraformone28/scripts/weather-etl.py"
 }

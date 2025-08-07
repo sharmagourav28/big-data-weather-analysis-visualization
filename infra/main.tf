@@ -15,7 +15,7 @@ resource "aws_glue_job" "etl_job" {
   role_arn = local.glue_role_arn
 
   command {
-    name            = "glueetl"
+    name            = "glueetl" # change not
     script_location = var.script_s3_path
     python_version  = "3"
   }

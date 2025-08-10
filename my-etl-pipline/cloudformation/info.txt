@@ -1,3 +1,0 @@
-remove bucket - glue etl job crawler database catalog
-
-7 : 51 mera bucket create ho rha hai and db bhi creat ho rha hai 

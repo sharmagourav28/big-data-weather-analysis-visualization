@@ -11,6 +11,7 @@ env:
   S3_BUCKET: fullautomatedbucketterraformone281
   ETL_JOB_NAME: glue-etl-job28
   CRAWLER_NAME: my-etl-crawler28
+  ATHENA_DB: weather_db28
 
 jobs:
   infra-deploy:
@@ -42,7 +43,7 @@ jobs:
         working-directory: infra
         run: terraform apply -auto-approve
         env:
-          TF_VAR_glue_role_arn: ${{ secrets.GLUE_ROLE_ARN }}
+          TF_VAR_glue_role_arn: ${{ secrets.GLUE_ROLE_ARN }}
 
   run-etl:
     needs: infra-deploy
@@ -63,12 +64,14 @@ jobs:
         run: |
           aws s3 cp ${{ env.SCRIPT_PATH }} s3://${{ env.S3_BUCKET }}/scripts/weather-etl.py
           echo "ETL script uploaded to S3."
+
       - name: Start Glue ETL Job
         id: start_etl
         run: |
           JOB_RUN_ID=$(aws glue start-job-run --job-name ${{ env.ETL_JOB_NAME }} --query 'JobRunId' --output text)
           echo "ETL JobRunId: $JOB_RUN_ID"
           echo "job_run_id=$JOB_RUN_ID" >> $GITHUB_OUTPUT
+
       - name: Wait for ETL Job Completion
         run: |
           JOB_RUN_ID=${{ steps.start_etl.outputs.job_run_id }}
@@ -84,5 +87,68 @@ jobs:
             fi
             sleep 30
           done
+
       - name: Start Glue Crawler
         run: aws glue start-crawler --name ${{ env.CRAWLER_NAME }}
+
+      - name: Wait for Crawler Completion
+        run: |
+          while true; do
+            STATE=$(aws glue get-crawler --name ${{ env.CRAWLER_NAME }} --query 'Crawler.State' --output text)
+            echo "Crawler state: $STATE"
+            if [ "$STATE" == "READY" ]; then
+              echo "Crawler finished."
+              break
+            fi
+            sleep 15
+          done
+
+      - name: Create/Update Athena View
+        run: |
+          VIEW_NAME="weather_kpi_view"
+          DB_NAME="${{ env.ATHENA_DB }}"
+          OUTPUT_LOCATION="s3://${{ env.S3_BUCKET }}/athena-results/"
+
+          QUERY="CREATE OR REPLACE VIEW ${VIEW_NAME} AS
+          SELECT
+              city,
+              state,
+              region,
+              latitude,
+              longitude,
+              year,
+              month,
+              date,
+              ((cloud_cover + cloud_cover_low + cloud_cover_mid + cloud_cover_high) / 4) AS avg_cloud_cover,
+              temperature_2m,
+              rain,
+              precipitation,
+              relative_humidity_2m,
+              apparent_temperature,
+              wind_speed_10m,
+              wind_gusts_10m
+          FROM your_weather_table;"
+
+          QUERY_EXEC_ID=$(aws athena start-query-execution \
+            --query-string "$QUERY" \
+            --query-execution-context Database=$DB_NAME \
+            --result-configuration OutputLocation=$OUTPUT_LOCATION \
+            --query 'QueryExecutionId' --output text)
+
+          echo "Started Athena query execution: $QUERY_EXEC_ID"
+
+          while true; do
+            STATUS=$(aws athena get-query-execution \
+              --query-execution-id $QUERY_EXEC_ID \
+              --query 'QueryExecution.Status.State' \
+              --output text)
+            echo "Athena query status: $STATUS"
+            if [ "$STATUS" == "SUCCEEDED" ]; then
+              echo "Athena view created/updated successfully."
+              break
+            elif [ "$STATUS" == "FAILED" ] || [ "$STATUS" == "CANCELLED" ]; then
+              echo "Athena view creation failed."
+              exit 1
+            fi
+            sleep 5
+          done

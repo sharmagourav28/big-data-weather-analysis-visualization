@@ -5,7 +5,7 @@ variable "region" {
 
 #declare a bucket name
 variable "bucket_name_prefix" {
-  default = "fullautomatedbucketterraformone28"
+  default = "fullautomatedbucketterraformone281"
 }
 
 
@@ -21,7 +21,7 @@ variable "glue_crawler_name" {
 
 #declare a script path
 variable "script_s3_path" {
-  default = "s3://fullautomatedbucketterraformone28/scripts/weather-etl.py"
+  default = "s3://fullautomatedbucketterraformone281/scripts/weather-etl.py"
 }
 
 variable "glue_role_arn" {

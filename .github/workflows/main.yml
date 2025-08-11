@@ -8,7 +8,7 @@ on:
 env:
   AWS_REGION: ${{ secrets.REGION }}
   SCRIPT_PATH: my-etl-pipline/glue-script/weather-etl.py
-  S3_BUCKET: fullautomatedbucketterraformone28
+  S3_BUCKET: fullautomatedbucketterraformone281
   ETL_JOB_NAME: glue-etl-job28
   CRAWLER_NAME: my-etl-crawler28
 

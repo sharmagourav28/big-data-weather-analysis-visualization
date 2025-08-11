@@ -55,7 +55,7 @@ base_paths = "s3://allweatherdatastatelaglongwd3/files/"
 mapping_path = (
     "s3://citystatelatlongregion/city_state_lat_long_region/cities_with_region.csv"
 )
-output_path_daily = "s3://weatherfinaldata/weatherdata/"
+output_path_daily = "s3://fullautomatedbucketterraformone281/weatherdata/"
 
 df_all = (
     spark.read.option("header", True)

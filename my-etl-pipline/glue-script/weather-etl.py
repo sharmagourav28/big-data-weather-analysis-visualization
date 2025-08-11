@@ -45,11 +45,12 @@ from pyspark.sql.functions import (
     to_date,
 )
 
-base_paths = [
-    "s3://allweatherrdatasetstatelatlongwd1/wd1data/",
-    "s3://allweatherstatelatlongwd2/wd2statedata/",
-    "s3://allweatherdatastatelaglongwd3/files/",
-]
+# base_paths = [
+#     "s3://allweatherrdatasetstatelatlongwd1/wd1data/",
+#     "s3://allweatherstatelatlongwd2/wd2statedata/",
+#     "s3://allweatherdatastatelaglongwd3/files/",
+# ]
+base_paths = "s3://allweatherdatastatelaglongwd3/files/"
 
 mapping_path = (
     "s3://citystatelatlongregion/city_state_lat_long_region/cities_with_region.csv"
@@ -58,7 +59,7 @@ output_path_daily = "s3://weatherfinaldata/weatherdata/"
 
 df_all = (
     spark.read.option("header", True)
-    .parquet(*base_paths)
+    .parquet(base_paths)
     .drop("pressure_msl", "surface_pressure")
 )
 

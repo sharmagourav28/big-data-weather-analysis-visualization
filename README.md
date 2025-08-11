@@ -53,6 +53,6 @@ Each file represents weather metrics for an Indian city. Key columns include:
 | **Language**       | PySpark, SQL, Python              |
 | **Cloud**          | AWS (Glue, S3, Athena)            |
 
-## 📊 Architecture Diagram
+## 📊 Architecture Diagrams
 
 ![Architecture Diagram](Architecture_Diagram.png)

@@ -109,6 +109,14 @@ jobs:
           DB_NAME="${{ env.ATHENA_DB }}"
           OUTPUT_LOCATION="s3://${{ env.S3_BUCKET }}/athena-results/"
 
+          # Get the latest table name from Glue
+          TABLE_NAME=$(aws glue get-tables \
+            --database-name $DB_NAME \
+            --query 'TableList[0].Name' \
+            --output text)
+
+          echo "Using table: $TABLE_NAME"
+
           QUERY="CREATE OR REPLACE VIEW ${VIEW_NAME} AS
           SELECT
               city,
@@ -127,9 +135,8 @@ jobs:
               apparent_temperature,
               wind_speed_10m,
               wind_gusts_10m
-          FROM ${DB_NAME}.your_weather_table"
+          FROM ${TABLE_NAME}"
 
-          # Start Athena query
           QUERY_EXEC_ID=$(aws athena start-query-execution \
             --query-string "$QUERY" \
             --query-execution-context Database=$DB_NAME \
@@ -138,7 +145,6 @@ jobs:
 
           echo "Started Athena query execution: $QUERY_EXEC_ID"
 
-          # Wait for completion and print error reason if failed
           while true; do
             STATUS=$(aws athena get-query-execution \
               --query-execution-id $QUERY_EXEC_ID \

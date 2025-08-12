@@ -127,8 +127,9 @@ jobs:
               apparent_temperature,
               wind_speed_10m,
               wind_gusts_10m
-          FROM your_weather_table;"
+          FROM ${DB_NAME}.your_weather_table"
 
+          # Start Athena query
           QUERY_EXEC_ID=$(aws athena start-query-execution \
             --query-string "$QUERY" \
             --query-execution-context Database=$DB_NAME \
@@ -137,6 +138,7 @@ jobs:
 
           echo "Started Athena query execution: $QUERY_EXEC_ID"
 
+          # Wait for completion and print error reason if failed
           while true; do
             STATUS=$(aws athena get-query-execution \
               --query-execution-id $QUERY_EXEC_ID \
@@ -148,6 +150,10 @@ jobs:
               break
             elif [ "$STATUS" == "FAILED" ] || [ "$STATUS" == "CANCELLED" ]; then
               echo "Athena view creation failed."
+              aws athena get-query-execution \
+                --query-execution-id $QUERY_EXEC_ID \
+                --query 'QueryExecution.Status.StateChangeReason' \
+                --output text
               exit 1
             fi
             sleep 5

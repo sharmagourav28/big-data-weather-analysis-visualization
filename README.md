@@ -68,11 +68,28 @@ Each file represents weather metrics for an Indian city. Key columns include:
 
 ## Key Performance Indicators (KPIs)
 
-- **Solar Potential Score:** Average of `cloud_cover`, `cloud_cover_low`, `cloud_cover_mid`, `cloud_cover_high` to measure solar energy potential.
-- **Yearly Climate Trends:** Track `temperature_2m` over `year`, `month`, and `date` to analyze temperature patterns.
-- **Rainfall Risk Score:** Evaluate rainfall risk using `state`, `city`, `rain`, and `precipitation`.
-- **Average Humidity:** Measure `relative_humidity_2m` across `year` for humidity trends.
-- **Temperature vs Apparent Temperature:** Compare `temperature_2m` with `apparent_temperature` per `year`.
+### Solar Potential Score
+Average of `cloud_cover`, `cloud_cover_low`, `cloud_cover_mid`, `cloud_cover_high` to identify regions with high solar energy potential.
+
+### Yearly Climate Trends
+Track `temperature_2m` over `year`, `month`, and `date` to analyze temperature variation patterns.
+
+### Rainfall Risk Score (Flood Risk)
+Evaluate flood risk by analyzing `rain` and `precipitation` across states and cities.
+
+### Average Humidity Trend
+Track `relative_humidity_2m` over months and years to monitor comfort levels and health risk factors.
+
+### Monthly Temperature Anomaly
+Compare current monthly average `temperature_2m` with historical averages to detect unusual temperature shifts.
+
+### Ideal Travel Days
+Count days meeting comfortable `temperature_2m`, `relative_humidity_2m`, and `rain` thresholds for tourism planning.
+
+### Yearly Precipitation Trend
+Measure total annual rainfall using `rain` and `precipitation` to track wet/dry year patterns.
+
+
 
 ---
 

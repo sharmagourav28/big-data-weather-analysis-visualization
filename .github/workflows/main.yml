@@ -3,7 +3,7 @@ name: Terraform + ETL Automation
 on:
   push:
     branches:
-      - main # branch name
+      - Sakshat # branch name
 
 env:
   AWS_REGION: ${{ secrets.REGION }}

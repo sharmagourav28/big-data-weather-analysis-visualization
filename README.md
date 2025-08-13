@@ -40,7 +40,7 @@ Each file represents weather metrics for an Indian city. Key columns include:
 
 | ...and more.
 
-# 📂 Raw Data Overview
+## 📂 Raw Data Overview
 
 | Attribute         | Details        |
 | ----------------- | -------------- |
@@ -52,7 +52,7 @@ Each file represents weather metrics for an Indian city. Key columns include:
 
 ## 🛠️ Technologies Used
 
-# 📊 Project Tech Stack
+## 📊 Project Tech Stack
 
 | Category                               | Tools / Frameworks                            |
 | -------------------------------------- | --------------------------------------------- |

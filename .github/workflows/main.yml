@@ -3,7 +3,7 @@ name: Terraform + ETL Automation
 on:
   push:
     branches:
-      - blade
+      - blade # branch name
 
 env:
   AWS_REGION: ${{ secrets.REGION }}
@@ -14,7 +14,7 @@ env:
   ATHENA_DB: weather_db28
 
 jobs:
-  infra-deploy:
+  infra-deploy: # Job Name
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository

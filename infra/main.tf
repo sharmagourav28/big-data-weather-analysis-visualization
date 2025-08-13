@@ -20,9 +20,9 @@ resource "aws_glue_job" "etl_job" {
     python_version  = "3"
   }
 
-  glue_version      = "4.0"
-  number_of_workers = 2
-  worker_type       = "G.1X"
+  glue_version      = "4.0"  # GLUE VERSION
+  number_of_workers = 2      # NUMBER OF WORKERS
+  worker_type       = "G.1X" # WORKER TYPE  4 CPU AND 16GB
 }
 
 resource "aws_glue_crawler" "etl_crawler" {

@@ -40,22 +40,41 @@ Each file represents weather metrics for an Indian city. Key columns include:
 
 | ...and more.
 
----
+# 📂 Raw Data Overview
+
+| Attribute         | Details        |
+| ----------------- | -------------- |
+| **Files**         | 4344 CSV Files |
+| **Total Size**    | ~97 GB         |
+| **Time Period**   | 2010 – 2024    |
+| **Total Rows**    | 52 CR+         |
+| **Total Columns** | 21             |
 
 ## 🛠️ Technologies Used
 
-| Category           | Tools / Frameworks                |
-| ------------------ | --------------------------------- |
-| **Big Data Tools** | Apache Spark, AWS Glue, Amazon S3 |
-| **Storage**        | AWS S3,                           |
-| **Data Querying**  | AWS Athena,                       |
-| **Visualization**  | Power BI                          |
-| **Language**       | PySpark, SQL, Python              |
-| **Cloud**          | AWS (Glue, S3, Athena)            |
+# 📊 Project Tech Stack
+
+| Category                               | Tools / Frameworks                            |
+| -------------------------------------- | --------------------------------------------- |
+| **AWS Cloud Service**                  | AWS S3, AWS Glue, AWS Athena, AWS EMR (Spark) |
+| **Programming Language**               | PySpark, SQL                                  |
+| **Automation & CI/CD**                 | Terraform, GitHub Actions                     |
+| **Project Management & Collaboration** | Jira, GitHub                                  |
+| **Visualization Tool**                 | Power BI                                      |
 
 ## 📊 Architecture Diagrams
 
 ![Architecture Diagram](Architecture_Diagram.png)
+
+## Key Performance Indicators (KPIs)
+
+- **Solar Potential Score:** Average of `cloud_cover`, `cloud_cover_low`, `cloud_cover_mid`, `cloud_cover_high` to measure solar energy potential.
+- **Yearly Climate Trends:** Track `temperature_2m` over `year`, `month`, and `date` to analyze temperature patterns.
+- **Rainfall Risk Score:** Evaluate rainfall risk using `state`, `city`, `rain`, and `precipitation`.
+- **Average Humidity:** Measure `relative_humidity_2m` across `year` for humidity trends.
+- **Temperature vs Apparent Temperature:** Compare `temperature_2m` with `apparent_temperature` per `year`.
+
+---
 
 ## 📈 Dashboard's
 

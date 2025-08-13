@@ -45,23 +45,26 @@ from pyspark.sql.functions import (
     to_date,
 )
 
-# base_paths = [
-#     "s3://allweatherrdatasetstatelatlongwd1/wd1data/",
-#     "s3://allweatherstatelatlongwd2/wd2statedata/",
-#     "s3://allweatherdatastatelaglongwd3/files/",
-# ]
-base_paths = "s3://allweatherdatastatelaglongwd3/files/"
+# raw data path
+base_paths = [
+    "s3://allweatherrdatasetstatelatlongwd1/wd1data/",
+    "s3://allweatherstatelatlongwd2/wd2statedata/",
+    "s3://allweatherdatastatelaglongwd3/files/",
+]
 
+# state wise city mapping file path
 mapping_path = (
     "s3://citystatelatlongregion/city_state_lat_long_region/cities_with_region.csv"
 )
+# output file locations
 output_path_daily = "s3://fullautomatedbucketterraformone281/weatherdata/"
 
 df_all = (
     spark.read.option("header", True)
-    .parquet(base_paths)
+    .parquet(*base_paths)
     .drop("pressure_msl", "surface_pressure")
 )
+
 
 df_cleaned = df_all.withColumn(
     "city", regexp_extract(col("file_only"), r"/([^/]+?)(?:_\d+)?\.csv$", 1)
@@ -81,12 +84,15 @@ city_file_counts = df_with_city.groupBy("city").agg(
     F.countDistinct("file_only").alias("file_count")
 )
 
+# city which have more than 1 file count
 multi_city_list = (
     city_file_counts.filter("file_count > 1")
     .select("city")
     .rdd.flatMap(lambda x: x)
     .collect()
 )
+
+# city which have only 1 file count
 single_city_list = (
     city_file_counts.filter("file_count = 1")
     .select("city")

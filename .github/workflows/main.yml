@@ -125,6 +125,7 @@ jobs:
               latitude,
               longitude,
               year,
+              season,
               month,
               date,
               ((cloud_cover + cloud_cover_low + cloud_cover_mid + cloud_cover_high) / 4) AS avg_cloud_cover,

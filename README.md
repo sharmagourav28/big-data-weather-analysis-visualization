@@ -57,7 +57,7 @@ Each file represents weather metrics for an Indian city. Key columns include:
 
 ![Architecture Diagram](Architecture_Diagram.png)
 
-## 📈 Dashboard
+## 📈 Dashboard's
 
 Below is a preview of our interactive weather analytics dashboard:
 

@@ -82,4 +82,4 @@ Below is a preview of our interactive weather analytics dashboard:
 
 ![Dashboard - Page 1](dashboard/page1.jpg)
 ![Dashboard - Page 2](dashboard/page2.jpg)
-[![Watch the video](diagram-thumbnail.png)](dashboard/diagramv.mp4)
+![Watch the video](dashboard/diagramv.mp4)

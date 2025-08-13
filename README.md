@@ -53,5 +53,3 @@ Each file represents weather metrics for an Indian city. Key columns include:
 | **Visualization**  | Power BI                          |
 | **Language**       | PySpark, SQL, Python              |
 | **Cloud**          | AWS (Glue, S3, Athena)            |
-
-hel

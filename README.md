@@ -20,7 +20,7 @@ This project focuses on the **analysis and visualization** of historical weather
 
 **Source:** [Kaggle - Indian 4000 Cities Weather Data (2010–2014)](https://www.kaggle.com/datasets/mukeshdevrath007/indian-5000-cities-weather-data)
 
-Each file represents weather metrics for an Indian city. Key columns include:
+Each file represents weather metrics for an Indian city. Key columns include::
 
 | Column Name            | Description                           |
 | ---------------------- | ------------------------------------- |

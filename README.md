@@ -72,7 +72,9 @@ Each file represents weather metrics for an Indian city. Key columns include:
 - **Yearly Climate Trends:** Track `temperature_2m` over `year`, `month`, and `date` to analyze temperature patterns.
 - **Rainfall Risk Score:** Evaluate rainfall risk using `state`, `city`, `rain`, and `precipitation`.
 - **Average Humidity:** Measure `relative_humidity_2m` across `year` for humidity trends.
-- **Temperature vs Apparent Temperature:** Compare `temperature_2m` with `apparent_temperature` per `year`.
+- **Monthly Temperature Anomaly:** Compare current monthly average `temperature_2m` with historical averages to detect unusual temperature shifts.
+- **Ideal Travel Days:** Count days meeting comfortable `temperature_2m`, `relative_humidity_2m`, and `rain` thresholds for tourism planning.
+- **Yearly Precipitation Trend:** Measure total annual rainfall using `rain` and `precipitation` to track wet/dry year patterns.
 
 ---
 
